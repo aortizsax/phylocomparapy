@@ -49,7 +49,8 @@ class BrownianMotionTest(unittest.TestCase):
         n_steps = 1000
         time_increment = 0.01
         standard_deviation = 1.0
-
+        n_simulations = 1000
+        
         # Generate the Brownian motion process
         seed = 2345678901
         numpy_randomGen = Generator(PCG64(seed))
@@ -57,9 +58,6 @@ class BrownianMotionTest(unittest.TestCase):
         scipy_randomGen.random_state=numpy_randomGen
         
         bm_values = brownian_motion(n_steps, time_increment, standard_deviation)
-        print(bm_values)
-        
-        
         
         # Calculate the expected values using the analytical solution
         numpy_randomGen = Generator(PCG64(seed))
@@ -68,11 +66,34 @@ class BrownianMotionTest(unittest.TestCase):
         expected_values = norm.rvs(scale=np.sqrt(time_increment) * standard_deviation, 
                           size=n_steps)
         expected_values = np.cumsum(expected_values)
-        print(expected_values)
         
         # Compare the generated values with the expected values
         self.assertTrue(np.allclose(bm_values, expected_values))
+        
+        
+    def test_brownian_motion_var(self):
+        n_steps = 1000
+        time_increment = 0.01
+        standard_deviation = 1.0
+        n_simulations = 3000
+        
+        # Generate the Brownian motion process
+        seed = 2345678901
+        numpy_randomGen = Generator(PCG64(seed))
+        scipy_randomGen = norm
+        scipy_randomGen.random_state=numpy_randomGen
+        
+        #repeat 1000 times get varience 
+        bm_simulation_values = []
+        for i in range(n_simulations):
+            bm_values = brownian_motion(n_steps, time_increment, standard_deviation)
+            bm_simulation_values.append(bm_values[-1])
+            
+        bm_simulation_var = np.var(bm_simulation_values)
+        expected_value = n_steps * time_increment * standard_deviation * standard_deviation
 
+        self.assertTrue(np.allclose(bm_simulation_var, expected_value, rtol = 0.05, atol = 2))
+        
 if __name__ == '__main__':
     unittest.main()
 
