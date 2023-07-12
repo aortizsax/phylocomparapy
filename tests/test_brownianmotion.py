@@ -36,8 +36,46 @@ if __name__ == "__main__":
 else:
     from . import _pathmap
 
-class TestCase(unittest.TestCase):
-    pass
+from phylocomparapy.simulate.stochastic import brownian_motion
+import unittest
+import numpy as np
+from scipy.stats import norm
+from numpy.random import Generator, PCG64
+from scipy.stats import binom
+
+class BrownianMotionTest(unittest.TestCase):
+    
+    def test_brownian_motion(self):
+        n_steps = 1000
+        time_increment = 0.01
+        standard_deviation = 1.0
+
+        # Generate the Brownian motion process
+        seed = 2345678901
+        numpy_randomGen = Generator(PCG64(seed))
+        scipy_randomGen = norm
+        scipy_randomGen.random_state=numpy_randomGen
+        
+        bm_values = brownian_motion(n_steps, time_increment, standard_deviation)
+        print(bm_values)
+        
+        
+        
+        # Calculate the expected values using the analytical solution
+        numpy_randomGen = Generator(PCG64(seed))
+        scipy_randomGen = norm
+        scipy_randomGen.random_state=numpy_randomGen
+        expected_values = norm.rvs(scale=np.sqrt(time_increment) * standard_deviation, 
+                          size=n_steps)
+        expected_values = np.cumsum(expected_values)
+        print(expected_values)
+        
+        # Compare the generated values with the expected values
+        self.assertTrue(np.allclose(bm_values, expected_values))
+
+if __name__ == '__main__':
+    unittest.main()
+
 
 if __name__ == "__main__":
     unittest.main()
