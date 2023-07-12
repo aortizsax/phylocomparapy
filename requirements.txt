@@ -4,3 +4,4 @@
 dendropy @ git+https://github.com/jeetsukumaran/dendropy@development-main
 numpy==1.25
 scipy==1.11.1
+matplotlib==3.7.2

@@ -36,7 +36,7 @@ if __name__ == "__main__":
 else:
     from . import _pathmap
 
-from phylocomparapy.simulate.stochastic import brownian_motion
+from phylocomparapy.simulate.stochastic import brownian_motion, simulate_brownian_motion_phylogeny
 import unittest
 import numpy as np
 from scipy.stats import norm
@@ -46,6 +46,7 @@ from scipy.stats import binom
 class BrownianMotionTest(unittest.TestCase):
     
     def test_brownian_motion(self):
+        # from chatgpt, it really checks the seed
         n_steps = 1000
         time_increment = 0.01
         standard_deviation = 1.0
@@ -72,6 +73,7 @@ class BrownianMotionTest(unittest.TestCase):
         
         
     def test_brownian_motion_var(self):
+        #histogram-visual based test 
         n_steps = 1000
         time_increment = 0.01
         standard_deviation = 1.0
@@ -94,6 +96,15 @@ class BrownianMotionTest(unittest.TestCase):
 
         self.assertTrue(np.allclose(bm_simulation_var, expected_value, rtol = 0.05, atol = 2))
         
+        
+    def test_simulate_brownian_motion_phylogeny(self):
+        n_taxa = 5
+        std = 1.0
+        root_value = 0.0
+        bm_values = simulate_brownian_motion_phylogeny(n_taxa, std, root_value)
+        print(bm_values) #add a between and within check 
+        #add a plot
+
 if __name__ == '__main__':
     unittest.main()
 
